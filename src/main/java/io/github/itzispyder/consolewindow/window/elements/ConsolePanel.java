@@ -17,8 +17,10 @@ public class ConsolePanel extends JPanel {
     public final JTextArea inputField = new JTextArea();
     public final JScrollPane inputScroller = new JScrollPane(inputField,JScrollPane.VERTICAL_SCROLLBAR_NEVER,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     public Thread fileUpdater;
+    private boolean logging;
 
     public ConsolePanel() {
+        this.logging = true;
         setBackground(Color.GRAY);
         setLayout(new BorderLayout());
 
@@ -62,7 +64,7 @@ public class ConsolePanel extends JPanel {
 
                 String line = br.readLine();
                 while(true) {
-                    if (line != null && !consoleField.getText().contains(line)) {
+                    if (logging && line != null && !consoleField.getText().contains(line)) {
                         consoleField.setText(consoleField.getText() + "\n" + line);
                         consoleField.setCaretPosition(consoleField.getDocument().getLength());
 
@@ -80,14 +82,23 @@ public class ConsolePanel extends JPanel {
                             chat.setCaretPosition(chat.getDocument().getLength());
                         }
 
-                        Thread.sleep(50);
+                        Main.mainFrame.logStats.setText("Logging: " + logging + ", Mem: " + Main.mainFrame.ramUsage());
                     }
                     line = br.readLine();
+                    Thread.sleep(50);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
         fileUpdater.start();
+    }
+
+    public boolean isLogging() {
+        return logging;
+    }
+
+    public void setLogging(boolean logging) {
+        this.logging = logging;
     }
 }
