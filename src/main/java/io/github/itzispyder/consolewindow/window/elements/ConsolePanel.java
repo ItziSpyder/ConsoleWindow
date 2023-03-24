@@ -81,9 +81,8 @@ public class ConsolePanel extends JPanel {
                             chat.setText(chat.getText() + "\n" + line);
                             chat.setCaretPosition(chat.getDocument().getLength());
                         }
-
-                        Main.mainFrame.logStats.setText("Logging: " + logging + ", Mem: " + Main.mainFrame.ramUsage());
                     }
+                    Main.mainFrame.logStats.setText("Logging: " + logging + ", Mem: " + Main.mainFrame.ramUsage());
                     line = br.readLine();
                     Thread.sleep(50);
                 }
