@@ -3,6 +3,7 @@ package io.github.itzispyder.consolewindow.window;
 import io.github.itzispyder.consolewindow.window.elements.ChatPanel;
 import io.github.itzispyder.consolewindow.window.elements.ConsolePanel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -31,8 +32,25 @@ public class ConsoleWindow extends JFrame {
 
     public ConsoleWindow() {
 
-        setLayout(new BorderLayout());
+        try {
+            setIconImage(ImageIO.read(new File("./src/main/resources/assets/images/icon.png")));
+        } catch (Exception ignore) {}
 
+        setLayout(new BorderLayout());
+        setResizable(false);
+
+        new Thread(() -> {
+            this.startBannerPanel();
+            this.startMainPanel();
+        }).start();
+
+        setTitle("Console Window - By ImproperIssues");
+        setBounds(0,0, (int) (device.getDisplayMode().getWidth() * 0.75), (int) (device.getDisplayMode().getHeight() * 0.75));
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    private void startBannerPanel() {
         bannerPanel.setBackground(Color.GRAY);
         bannerPanel.setLayout(new GridLayout(1,10));
         add(bannerPanel,BorderLayout.NORTH);
@@ -61,8 +79,6 @@ public class ConsoleWindow extends JFrame {
 
         logStats.setBackground(Color.DARK_GRAY);
         logStats.setForeground(Color.YELLOW);
-        logStats.setText("Logging: false, Mem: 0");
-        logStats.setColumns(50);
         logStats.setBorder(new TitledBorder(new LineBorder(Color.BLACK,1),"Log Statistics:",0,0,Font.getFont(Font.SANS_SERIF),Color.WHITE));
         bannerPanel.add(logStats);
 
@@ -79,22 +95,19 @@ public class ConsoleWindow extends JFrame {
             }
         });
         bannerPanel.add(logToggleButton);
+    }
 
+    private void startMainPanel() {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBackground(Color.DARK_GRAY);
-        mainPanel.setBorder(new LineBorder(Color.DARK_GRAY,80));
+        mainPanel.setBorder(new LineBorder(Color.DARK_GRAY,20));
         add(mainPanel, BorderLayout.CENTER);
 
-        consolePanel.setBorder(new LineBorder(Color.GRAY,40));
+        consolePanel.setBorder(new LineBorder(Color.GRAY,20));
         mainPanel.add(consolePanel, BorderLayout.CENTER);
 
-        chatPanel.setBorder(new LineBorder(Color.GRAY,40));
+        chatPanel.setBorder(new LineBorder(Color.GRAY,20));
         mainPanel.add(chatPanel, BorderLayout.WEST);
-
-        setTitle("Console Window - By ImproperIssues");
-        setBounds(0,0, (int) (device.getDisplayMode().getWidth() * 0.5), (int) (device.getDisplayMode().getHeight() * 0.5));
-        setVisible(true);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     public void resetPanes(File log) {
@@ -108,10 +121,5 @@ public class ConsoleWindow extends JFrame {
 
             this.consolePanel.updateConsoleField();
         } catch (Exception ignore) {}
-    }
-
-    public String ramUsage() {
-        Runtime r = Runtime.getRuntime();
-        return Math.floor(((r.maxMemory() - r.freeMemory()) / (double) r.maxMemory()) * 1000) / 10 + "%";
     }
 }
